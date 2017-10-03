@@ -18,6 +18,8 @@ object Main extends App {
   landingPage
     .open
     .login(credentials._1, credentials._2)
+    .expensesAndCosts()
+      .reviewExistingCostsAndExpenses()
 
 
   def init() = {
