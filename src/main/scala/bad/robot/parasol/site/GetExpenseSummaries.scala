@@ -4,10 +4,10 @@ import bad.robot.parasol.site.domain.ExpenseSummary
 import bad.robot.parasol.site.page.AllClaimsPage
 import org.openqa.selenium.{By, WebElement}
 
-class GetExpenses(page: AllClaimsPage) extends Extraction {
+class GetExpenseSummaries(page: AllClaimsPage) extends Extraction {
   import scala.collection.JavaConverters._
 
-  def getExpenseSummaries: GetExpenses = {
+  def getExpenseSummaries: GetExpenseSummaries = {
     val expenses = getExpenseRows.filter(expenseLine).map(toExpenseSummary)
     print(expenses.mkString("\n"))
     this

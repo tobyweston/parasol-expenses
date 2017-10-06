@@ -1,6 +1,6 @@
 package bad.robot.parasol.site.page
 
-import bad.robot.parasol.site.GetExpenses
+import bad.robot.parasol.site.GetExpenseSummaries
 import bad.robot.parasol.site.domain.FinancialYear
 import org.openqa.selenium.{By, WebDriver}
 import bad.robot.webdriver._
@@ -16,7 +16,7 @@ case class AllClaimsPage(driver: WebDriver) {
     updatePageWithFinancialYear
     updatePagination
 
-    new GetExpenses(this)
+    new GetExpenseSummaries(this)
   }
 
 }
