@@ -2,7 +2,8 @@ package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
 
-import bad.robot.parasol.site.{April2016, LandingPage}
+import bad.robot.parasol.site.domain.April2016
+import bad.robot.parasol.site.page.LandingPage
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 
 object Main extends App {

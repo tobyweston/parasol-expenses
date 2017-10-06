@@ -1,4 +1,4 @@
-package bad.robot.parasol.site
+package bad.robot.parasol.site.domain
 
 trait FinancialYear {
   val text: String

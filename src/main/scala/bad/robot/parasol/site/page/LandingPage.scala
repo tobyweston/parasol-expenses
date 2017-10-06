@@ -1,4 +1,4 @@
-package bad.robot.parasol.site
+package bad.robot.parasol.site.page
 
 import org.openqa.selenium.{By, WebDriver}
 

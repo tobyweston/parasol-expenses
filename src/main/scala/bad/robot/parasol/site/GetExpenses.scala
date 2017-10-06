@@ -1,8 +1,10 @@
 package bad.robot.parasol.site
 
+import bad.robot.parasol.site.domain.ExpenseSummary
+import bad.robot.parasol.site.page.AllClaimsPage
 import org.openqa.selenium.{By, WebElement}
 
-class GetExpenses(page: ReviewExistingExpenses) extends Extraction {
+class GetExpenses(page: AllClaimsPage) extends Extraction {
   import scala.collection.JavaConverters._
 
   def getExpenseSummaries: GetExpenses = {
