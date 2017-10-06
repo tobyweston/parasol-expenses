@@ -3,6 +3,7 @@ package bad.robot.parasol.site
 import org.openqa.selenium.{By, WebDriver}
 import bad.robot.webdriver._
 import bad.robot.webdriver.Locator._
+import org.openqa.selenium.support.ui.Select
 
 case class WelcomePage(page: LandingPage) {
 
@@ -29,4 +30,14 @@ case class WelcomePage(page: LandingPage) {
 
 case class ReviewExistingExpenses(driver: WebDriver) {
 
+  import scala.collection.JavaConverters._
+
+  def selectFinancialYear(year: FinancialYear) = {
+    val select = new Select(driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear")))
+    if (select.getOptions.asScala.exists(_.getText == year.text)) {
+      select.selectByVisibleText(year.text)
+    }
+    driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
+    this
+  }
 }

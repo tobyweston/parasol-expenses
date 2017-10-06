@@ -2,7 +2,7 @@ package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
 
-import bad.robot.parasol.site.LandingPage
+import bad.robot.parasol.site.{April2015, LandingPage}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 
 object Main extends App {
@@ -14,12 +14,14 @@ object Main extends App {
     val password = sys.props.get("password").getOrElse(throw new Exception("no password found, set with -Dpassword=xxx"))
     (user, password)
   }
+  val year = April2015
 
   landingPage
     .open
     .login(credentials._1, credentials._2)
     .expensesAndCosts()
       .reviewExistingCostsAndExpenses()
+        .selectFinancialYear(year)
 
 
   def init() = {
