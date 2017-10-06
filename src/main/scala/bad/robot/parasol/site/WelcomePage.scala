@@ -36,8 +36,8 @@ case class ReviewExistingExpenses(driver: WebDriver) {
     val select = new Select(driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear")))
     if (select.getOptions.asScala.exists(_.getText == year.text)) {
       select.selectByVisibleText(year.text)
-    }
-    driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
+      driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
+    } else throw new NoSuchElementException(s"Can not find the year '${year.text}' in the 'Financial Year' dropdown")
     this
   }
 }
