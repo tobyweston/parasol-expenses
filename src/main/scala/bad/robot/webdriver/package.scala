@@ -1,9 +1,9 @@
 package bad.robot
 
 import com.google.common.base.{Function => GuavaFunction, Predicate => GuavaPredicate}
-import org.openqa.selenium._
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
-import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.support.ui.{Select, WebDriverWait}
+import org.openqa.selenium.{By, WebDriver, WebElement, _}
 
 import scala.collection.JavaConverters
 
@@ -16,6 +16,19 @@ package object webdriver {
   implicit def functionToFunction[A, W >: WebDriver](function: W => A): GuavaFunction[W, A] = {
     (driver: W) => function.apply(driver)
   }
+
+
+  def select(locator: By, text: String, driver: WebDriver) = {
+    import scala.collection.JavaConverters._
+
+    val select = new Select(driver.findElement(locator))
+    if (select.getOptions.asScala.exists(_.getText == text)) {
+      select.selectByVisibleText(text)
+    } else {
+      throw new NoSuchElementException(s"Can not find the year '$text' in the 'Financial Year' dropdown")
+    }
+  }
+
 
   def waitForElement(locator: By)(implicit driver: WebDriver): WebElement = {
     waitForCondition(driver, _.findElement(locator), s"waiting for element '$locator' on page '${driver.getCurrentUrl}'")

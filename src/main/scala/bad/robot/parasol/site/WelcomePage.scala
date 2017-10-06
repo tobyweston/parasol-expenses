@@ -1,9 +1,8 @@
 package bad.robot.parasol.site
 
-import org.openqa.selenium.{By, WebDriver}
-import bad.robot.webdriver._
 import bad.robot.webdriver.Locator._
-import org.openqa.selenium.support.ui.Select
+import bad.robot.webdriver._
+import org.openqa.selenium.{By, WebDriver}
 
 case class WelcomePage(page: LandingPage) {
 
@@ -20,7 +19,7 @@ case class WelcomePage(page: LandingPage) {
   }
 
   case class Menu(page: WelcomePage) {
-    def reviewExistingCostsAndExpenses() = {
+    def reviewExistingCostsAndExpenses(): ReviewExistingExpenses = {
       reviewExpensesSubMenu.waitForElement.click()
       ReviewExistingExpenses(driver)
     }
@@ -30,14 +29,16 @@ case class WelcomePage(page: LandingPage) {
 
 case class ReviewExistingExpenses(driver: WebDriver) {
 
-  import scala.collection.JavaConverters._
-
   def selectFinancialYear(year: FinancialYear) = {
-    val select = new Select(driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear")))
-    if (select.getOptions.asScala.exists(_.getText == year.text)) {
-      select.selectByVisibleText(year.text)
-      driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
-    } else throw new NoSuchElementException(s"Can not find the year '${year.text}' in the 'Financial Year' dropdown")
-    this
+
+    def updatePageWithFinancialYear = driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
+    def updatePagination = select(By.id("ctl00_ctl00_mainContent_MainContent_gridFilter_ItemList"), "50", driver)
+
+    select(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear"), year.text, driver)
+    updatePageWithFinancialYear
+    updatePagination
+
+    new GetExpenses(this)
   }
+
 }
