@@ -22,7 +22,7 @@ object Main extends App {
     .expensesAndCosts()
       .reviewExistingCostsAndExpenses()
         .selectFinancialYear(year)
-        .getExpenses
+        .getExpenseSummaries
         .end
 
 
