@@ -18,8 +18,6 @@ class GetExpenses(page: ReviewExistingExpenses) extends Extraction {
     rows
   }
 
-  private val heading: WebElement => Boolean = row => row.getAttribute("id") == "ctl00_ctl00_mainContent_MainContent_gridListing_top_head"
-
   private val expenseLine: WebElement => Boolean = row => row.getAttribute("id").contains("ctl00_ctl00_mainContent_MainContent_gridListing_row")
 
   private val toExpenseSummary: WebElement => ExpenseSummary = row => {
