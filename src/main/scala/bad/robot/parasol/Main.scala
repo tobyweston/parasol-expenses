@@ -2,7 +2,9 @@ package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
 
-import bad.robot.parasol.site.domain.April2016
+import bad.robot.parasol.site.GetExpenseSummaries
+import bad.robot.parasol.site.GetExpenseSummaries._
+import bad.robot.parasol.site.domain.{April2016, ExpenseSummary}
 import bad.robot.parasol.site.page.LandingPage
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 
@@ -23,7 +25,7 @@ object Main extends App {
     .expensesAndCosts()
       .reviewExistingCostsAndExpenses()
         .selectFinancialYear(year)
-        .getExpenseSummaries
+        .getExpenseSummaries(Checked)
         .end
 
 
