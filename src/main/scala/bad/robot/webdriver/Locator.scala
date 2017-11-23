@@ -14,6 +14,7 @@ object Locator {
       webdriver.waitForElement(locator)
     }
 
+    // don't know how this could work. By has a findElements method so it clashes
     def findElements(implicit driver: WebDriver): List[WebElement] = {
       webdriver.findElements(locator)
     }

@@ -25,7 +25,7 @@ package object webdriver {
     if (select.getOptions.asScala.exists(_.getText == text)) {
       select.selectByVisibleText(text)
     } else {
-      throw new NoSuchElementException(s"Can not find the year '$text' in the 'Financial Year' dropdown")
+      throw new NoSuchElementException(s"Could not find the text '$text' in a dropdown")
     }
   }
 
