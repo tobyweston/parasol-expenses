@@ -2,6 +2,7 @@ package bad.robot.parasol.site.page
 
 import bad.robot.parasol.site.domain.ExpenseSummary
 import org.openqa.selenium.By
+import scala.collection.JavaConverters._
 
 case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
 
@@ -22,6 +23,9 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
 
   def back = {
     driver.navigate().back()
+    val elements = driver.findElements(By.tagName("h1")).asScala.toList
+    if (elements.exists(element => element.getText.equalsIgnoreCase("Confirm Form Resubmission")))
+      driver.navigate.refresh
   }
 
   def driver = parent.driver

@@ -1,6 +1,6 @@
 package bad.robot.parasol.site.page
 
-import bad.robot.webdriver.{PageObject, _}
+import bad.robot.webdriver.PageObject
 import org.openqa.selenium.{By, WebElement}
 
 import scala.collection.JavaConverters._
@@ -22,15 +22,13 @@ case class UploadedReceiptsPage(parent: ExpenseClaimPage, page: Option[WebElemen
     executeOn(page => {
       val table = page.findElement(By.className("uploadedReceiptsTable"))
       val rows = table.findElements(By.tagName("tr")).asScala.toList
-      val xxxx = rows.filterNot(heading).foreach(click)
+      rows.filterNot(heading).foreach(click)
     })
     this
   }
 
   def close = {
-    executeOn(page => {
-      page.findElement(By.id("ctl00_ctl00_mainContent_MainContent_businessExpenseClaim_uploadedReceipts_pnlUploadedReceipts_CloseButton")).click()
-    })
+    parent.driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_businessExpenseClaim_uploadedReceipts_pnlUploadedReceipts_CloseButton")).click()
     parent
   }
 }
