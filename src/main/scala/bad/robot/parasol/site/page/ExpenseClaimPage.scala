@@ -25,7 +25,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
     driver.navigate().back()
     val elements = driver.findElements(By.tagName("h1")).asScala.toList
     if (elements.exists(element => element.getText.equalsIgnoreCase("Confirm Form Resubmission")))
-      driver.navigate.refresh
+      driver.navigate.refresh()
   }
 
   def driver = parent.driver
