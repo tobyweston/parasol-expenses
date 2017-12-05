@@ -18,7 +18,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
   }
 
   def receipts = {
-    UploadedReceiptsPage(this, None)
+    UploadedReceiptsPage(this, summary.period, None)
   }
 
   def back = {
