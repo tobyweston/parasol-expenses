@@ -12,7 +12,7 @@ import scala.concurrent.duration.Duration
 
 case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: Option[WebElement]) extends PageObject {
 
-  val downloadLocation = "/Users/toby/Downloads"
+  val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
 
   def view = {
     val viewReceiptsButton = By.id("ctl00_ctl00_mainContent_MainContent_businessExpenseClaim_uploadedReceipts_uploadedReceipts")
@@ -30,9 +30,9 @@ case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: 
       link
     }
     val rename: WebElement => Unit = link => {
-      val file = new File(downloadLocation) / link.getText
-      val downloading = new File(downloadLocation) / (link.getText + ".crdownload")
-      val folder = new File(downloadLocation) / period
+      val file = downloadLocation / link.getText
+      val downloading = downloadLocation / (link.getText + ".crdownload")
+      val folder = downloadLocation / period
       val timeout = Duration(30, SECONDS)
       
       if (!folder.exists())
