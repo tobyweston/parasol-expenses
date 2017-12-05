@@ -11,13 +11,17 @@ case class AllClaimsPage(driver: WebDriver) {
   def selectFinancialYear(year: FinancialYear) = {
 
     def updatePageWithFinancialYear = driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
-    def updatePagination = select(By.id("ctl00_ctl00_mainContent_MainContent_gridFilter_ItemList"), "50", driver)
 
     select(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear"), year.text, driver)
     updatePageWithFinancialYear
-    updatePagination
+    showNumberOfClaims(50)
 
     this
+  }
+
+  def showNumberOfClaims(number: Int) = {
+    assert(number == 10 || number == 20 || number == 50)
+    select(By.id("ctl00_ctl00_mainContent_MainContent_gridFilter_ItemList"), number.toString, driver)
   }
 
   def getExpenseSummaries(summaryType: ExpenseSummary => Boolean): List[ExpenseClaimPage] = {
