@@ -33,13 +33,13 @@ case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: 
       val file = new File(downloadLocation) / link.getText
       val downloading = new File(downloadLocation) / (link.getText + ".crdownload")
       val folder = new File(downloadLocation) / period
+      val timeout = Duration(30, SECONDS)
       
       if (!folder.exists())
         folder.mkdirs()
-      WaitFor.waitFor(file.exists() & !downloading.exists(), Timeout(Duration(10, SECONDS)))
-      WaitFor.waitFor(file.renameTo(folder / link.getText), Timeout(Duration(10, SECONDS)))
-//      Files.move(file.toPath, folder.toPath, REPLACE_EXISTING)
-//      file.renameTo(folder / link.getText)
+      
+      WaitFor.waitFor(file.exists() & !downloading.exists(), Timeout(timeout))
+      WaitFor.waitFor(file.renameTo(folder / link.getText), Timeout(timeout))
     }
 
     executeOn(page => {
