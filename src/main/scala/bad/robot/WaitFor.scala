@@ -37,10 +37,8 @@ object WaitFor {
   private def success(condition: => Boolean, timeout: Timeout, sleep: Duration): Boolean = {
     while (!timeout.hasExpired) {
       if (condition) {
-        println("ok: carry on")
         return true
       }
-      println("failed: sleeping")
       Thread.sleep(DefaulSleepPeriod.toMillis)
     }
     false
