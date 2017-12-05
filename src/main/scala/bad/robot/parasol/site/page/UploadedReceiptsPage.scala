@@ -38,8 +38,8 @@ case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: 
       if (!folder.exists())
         folder.mkdirs()
       
-      WaitFor.waitFor(file.exists() & !downloading.exists(), Timeout(timeout))
-      WaitFor.waitFor(file.renameTo(folder / link.getText), Timeout(timeout))
+      WaitFor.waitOrTimeout(file.exists() & !downloading.exists(), println(s"failed to download $file, timed out after $timeout"), Timeout(timeout))
+      WaitFor.waitOrTimeout(file.renameTo(folder / link.getText), println(s"failed to rename $file, timed out after $timeout"), Timeout(timeout))
     }
 
     executeOn(page => {
