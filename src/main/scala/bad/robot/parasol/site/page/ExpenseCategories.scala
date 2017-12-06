@@ -1,9 +1,7 @@
 package bad.robot.parasol.site.page
 
 object ExpenseCategories {
-
-  val all = List(Mileage, CarParking, ProfessionalDevelopment, ElectronicEquipment, TravelAndCarHire, Stationery, ProfessionalSubscriptions, BusinessEntertainment, Postage, SafetyEquipment)
-
+  
   class Category(val shortName: String) {
     def id = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_expenseAddItems"
     def description = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_summaryType"
@@ -17,10 +15,25 @@ object ExpenseCategories {
   case object Accommodation extends Category("accommodation")
   case object FoodAndDrink extends Category("foodAndDrink")
   case object Stationery extends Category("stationery")
-  case object CallCosts extends Category("callCost")
+  case object CallCosts extends Category("callCosts")
   case object ProfessionalSubscriptions extends Category("professionalSubscriptions")
   case object BusinessEntertainment extends Category("businessEntertainment")
   case object Postage extends Category("postage")
   case object SafetyEquipment extends Category("safetyEquipment")
 
+  val all = List(
+    Mileage, 
+    CarParking, 
+    ProfessionalDevelopment, 
+    ElectronicEquipment, 
+    TravelAndCarHire,
+    Accommodation,
+    FoodAndDrink, 
+    Stationery, 
+    CallCosts,
+    ProfessionalSubscriptions, 
+    BusinessEntertainment, 
+    Postage, 
+    SafetyEquipment
+  )
 }
