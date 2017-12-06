@@ -18,7 +18,7 @@ package object webdriver {
   }
 
 
-  def select(locator: By, text: String, driver: WebDriver) = {
+  def select(locator: By, text: String, driver: WebDriver): Unit = {
     import scala.collection.JavaConverters._
 
     val select = new Select(driver.findElement(locator))
@@ -63,7 +63,7 @@ package object webdriver {
   }
 
   private def waitForCondition[A](driver: WebDriver, predicate: WebDriver => A, message: String): A = {
-    new WebDriverWait(driver, 5)
+    new WebDriverWait(driver, 30)
       .withMessage(message)
       .ignoring(classOf[NoSuchElementException])
       .ignoring(classOf[ElementNotVisibleException])
