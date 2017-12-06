@@ -12,7 +12,7 @@ import scala.concurrent.duration.Duration
 
 case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: Either[String, DateRange], page: Option[WebElement]) extends PageObject {
 
-  val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
+  private val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
 
   def view = {
     val viewReceiptsButton = By.id("ctl00_ctl00_mainContent_MainContent_businessExpenseClaim_uploadedReceipts_uploadedReceipts")

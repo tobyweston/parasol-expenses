@@ -1,11 +1,14 @@
 package bad.robot.parasol.site.page
 
+import java.io.File
+
 import bad.robot._
-import bad.robot.webdriver.waitUntilVisible
-import bad.robot.parasol.site.domain.ExpenseSummary
-import org.openqa.selenium.By
+import bad.robot.parasol.site.domain.{Expense, ExpenseDetails, ExpenseSummary}
+import bad.robot.parasol.site.page.ExpenseCategories.{Category, Mileage, TravelAndCarHire, all}
+import bad.robot.webdriver.{waitUntilVisible, _}
+import org.openqa.selenium.{By, WebElement}
+
 import scala.collection.JavaConverters._
-import bad.robot.webdriver._
 
 case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
 
@@ -14,15 +17,22 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
     this
   }
 
-  def extract = {
+  def download = {
     val title = driver.findElement(By.id("ctl00_ctl00_pageTitle_pageTitle_heading")).getText
-    // todo grab all the details to categorise the expenses
-    println(s"$title")
+    println(s"\n$title")
+
+    val claimsRegion = driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_claimList_ExpensesContentPanel"))
+    val expenses = all.map(category => {
+      extractExpenses(category, claimsRegion.findElement(By.id(category.id)))
+    })
+
+    save(expenses)
+
     this
   }
 
   def receipts = {
-    UploadedReceiptsPage(this, summary.period.toDateRange.left.map(_ => summary.period), None)
+    UploadedReceiptsPage(this, summary.period, None)
   }
 
   def back = {
@@ -50,6 +60,56 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
 
   def end = parent
 
+  private def extractExpenses(category: Category, claim: WebElement) = {
+    val description = claim.findElement(By.id(category.description)).getText
+    val total = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala.head.getText
+    val items = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
+    val expandLink = claim.findElement(By.tagName("a"))
+
+    val details = ExpenseDetails(description, total, items, Nil)
+
+    val expenses = if (details.items > 0) {
+      expandLink.click()
+      val table = waitUntilVisible(By.id(category.details))(driver)
+      val rows = table.findElements(By.tagName("tr")).asScala.toList
+      rows.drop(1).map(toExpense(category, _))
+    } else {
+      Nil
+    }
+
+    details.copy(expenses = expenses.flatten)
+  }
+
+  private val toExpense: ((Category, WebElement)) => Option[Expense] = {
+    case (Mileage, _)            => None
+
+    case (TravelAndCarHire, row) =>
+      val cells = row.findElements(By.tagName("td")).asScala.toList
+      val description = Some(cells.head.getText)
+      // val amountPerDay = cells(1).getText
+      val dates = cells(2).getText
+      val total = cells(3).getText
+      Some(Expense(dates, total, description))
+
+    case (_, row)                =>
+      val cells = row.findElements(By.tagName("td")).asScala.toList
+      val date = cells.head.getText
+      val amount = cells(1).getText
+      Some(Expense(date, amount))
+  }
+
+  def save(expenses: List[ExpenseDetails]) = {
+    val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
+    val folder = downloadLocation / summary.period.map(_.toString()).getOrElse(summary.period.left.get)
+
+    if (!folder.exists())
+      folder.mkdirs()
+
+    println(expenses.mkString("\n"))
+  }
+
 }
+
+
 
 

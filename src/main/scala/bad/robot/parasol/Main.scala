@@ -29,13 +29,14 @@ object Main extends App {
 
 
   private def download(claim: ExpenseClaimPage) = {
-    claim.view()
-      .extract
-      .receipts
-        .view
+    claim
+      .view()
         .download
-        .close
-      .back
+        .receipts
+          .view
+          .download
+          .close
+        .back
   }
 
   def init() = {

@@ -1,5 +1,6 @@
 package bad.robot.parasol.site.page
 
+import bad.robot._
 import bad.robot.parasol.site.domain.{ExpenseSummary, FinancialYear}
 import bad.robot.webdriver._
 import org.openqa.selenium.{By, WebDriver, WebElement}
@@ -45,7 +46,7 @@ case class AllClaimsPage(driver: WebDriver) {
   private val toExpenseSummary: WebElement => ExpenseSummary = row => {
     val cells = row.findElements(By.tagName("td")).asScala.toList
     val assignment = cells(0).getText
-    val period     = cells(1).getText
+    val period     = cells(1).getText.toDateRange.left.map(_ => cells(1).getText)
     val amount     = cells(2).getText
     val status     = cells(3).getText
     val id         = cells(4).getAttribute("id")
