@@ -1,9 +1,11 @@
 package bad.robot.parasol.site.page
 
 import java.io.File
+import java.nio.charset.StandardCharsets._
+import java.nio.file.Files
 
 import bad.robot._
-import bad.robot.parasol.site.domain.{Expense, ExpenseDetails, ExpenseSummary}
+import bad.robot.parasol.site.domain.{Expense, Expenses, ExpenseSummary}
 import bad.robot.parasol.site.page.ExpenseCategories.{Category, Mileage, TravelAndCarHire, all}
 import bad.robot.webdriver.{waitUntilVisible, _}
 import org.openqa.selenium.{By, WebElement}
@@ -26,7 +28,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
       extractExpenses(category, claimsRegion.findElement(By.id(category.id)))
     })
 
-    save(expenses)
+    save(expenses.filter(_.expenses.nonEmpty))
 
     this
   }
@@ -66,18 +68,20 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
     val items = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
     val expandLink = claim.findElement(By.tagName("a"))
 
-    val details = ExpenseDetails(description, total, items, Nil)
+    val details = Expenses(description, total, items, Nil)
 
     val expenses = if (details.items > 0) {
       expandLink.click()
       val table = waitUntilVisible(By.id(category.details))(driver)
       val rows = table.findElements(By.tagName("tr")).asScala.toList
-      rows.drop(1).map(toExpense(category, _))
+      rows
+        .drop(1)
+        .flatMap(toExpense(category, _))
     } else {
       Nil
     }
 
-    details.copy(expenses = expenses.flatten)
+    details.copy(expenses = expenses)
   }
 
   private val toExpense: ((Category, WebElement)) => Option[Expense] = {
@@ -98,14 +102,17 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
       Some(Expense(date, amount))
   }
 
-  def save(expenses: List[ExpenseDetails]) = {
+  def save(expenses: List[Expenses]) = {
+    import argonaut.Argonaut._
+
     val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
     val folder = downloadLocation / summary.period.map(_.toString()).getOrElse(summary.period.left.get)
 
     if (!folder.exists())
       folder.mkdirs()
 
-    println(expenses.mkString("\n"))
+    val json = expenses.jencode.spaces2
+    Files.write((folder / "expenses.json").toPath, json.getBytes(UTF_8))
   }
 
 }
