@@ -8,5 +8,8 @@ package object robot {
     def /(child: String): File = new File(file, child)
   }
 
+  implicit class PeriodOps(period: String) {
+    def toDateRange: Either[String, DateRange] = DateRangeParser.parse(period)
+  }
 }
 
