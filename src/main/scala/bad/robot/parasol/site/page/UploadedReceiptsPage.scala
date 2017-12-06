@@ -10,7 +10,7 @@ import org.openqa.selenium.{By, WebElement}
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 
-case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: Option[WebElement]) extends PageObject {
+case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: Either[String, DateRange], page: Option[WebElement]) extends PageObject {
 
   val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
 
@@ -32,7 +32,7 @@ case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: String, page: 
     val rename: WebElement => Unit = link => {
       val file = downloadLocation / link.getText
       val downloading = downloadLocation / (link.getText + ".crdownload")
-      val folder = downloadLocation / period
+      val folder = downloadLocation / period.map(_.toString()).getOrElse(period.left.get)
       val timeout = Duration(30, SECONDS)
       
       if (!folder.exists())

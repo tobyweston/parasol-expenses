@@ -1,5 +1,6 @@
 package bad.robot.parasol.site.page
 
+import bad.robot._
 import bad.robot.webdriver.waitUntilVisible
 import bad.robot.parasol.site.domain.ExpenseSummary
 import org.openqa.selenium.By
@@ -21,18 +22,24 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
   }
 
   def receipts = {
-    UploadedReceiptsPage(this, summary.period, None)
+    UploadedReceiptsPage(this, summary.period.toDateRange.left.map(_ => summary.period), None)
   }
 
   def back = {
+    def tryAndForceARefreshAsItsFlaky(): Unit = {
+      waitForElement(By.id("ctl00_ctl00_mainContent_MainContent_gridListing_footer"))(driver)
+      parent.showNumberOfClaims(50)
+      parent.showNumberOfClaims(20)
+      parent.showNumberOfClaims(50)
+    }
+
     driver.navigate().back()
     if (requiresRefresh()) {
       driver.navigate.refresh()
-      waitForElement(By.id("ctl00_ctl00_mainContent_MainContent_gridListing_footer"))
-      parent.showNumberOfClaims(50)
+      tryAndForceARefreshAsItsFlaky()
     }
   }
-  
+
   private def requiresRefresh() = {
     val elements = driver.findElements(By.tagName("h1")).asScala.toList
     if (elements.exists(element => element.getText.equalsIgnoreCase("Confirm Form Resubmission"))) true

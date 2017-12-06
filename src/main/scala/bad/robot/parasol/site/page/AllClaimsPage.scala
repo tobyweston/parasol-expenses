@@ -22,7 +22,7 @@ case class AllClaimsPage(driver: WebDriver) {
   def showNumberOfClaims(number: Int) = {
     assert(number == 10 || number == 20 || number == 50)
     select(By.id("ctl00_ctl00_mainContent_MainContent_gridFilter_ItemList"), number.toString, driver)
-    waitForElement(By.id("ctl00_ctl00_mainContent_MainContent_gridListing_footer"))
+    waitForElement(By.id("ctl00_ctl00_mainContent_MainContent_gridListing_footer"))(driver)
   }
 
   def getExpenseSummaries(summaryType: ExpenseSummary => Boolean): List[ExpenseClaimPage] = {
