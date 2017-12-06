@@ -68,7 +68,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
     val items = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
     val expandLink = claim.findElement(By.tagName("a"))
 
-    val details = Expenses(description, total, items, Nil)
+    val details = Expenses(summary, description, total, items, Nil)
 
     val expenses = if (details.items > 0) {
       expandLink.click()
