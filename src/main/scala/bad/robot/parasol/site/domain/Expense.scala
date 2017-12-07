@@ -10,12 +10,20 @@ object Expense {
 
   implicit val codec = CodecJson.derive[Expense]
 
-  def apply(date: String, amount: String, description: Option[String] = None) = {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-    val sanitisedDate = date.replaceAll("""(?<=\d)(st|nd|rd|th)""", "")
-    val amountAsDouble = """\d*\.\d{2}""".r.findFirstIn(amount).map(_.toDouble).getOrElse(0D)
+  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-    new Expense(LocalDate.parse(sanitisedDate, formatter), amountAsDouble, description)
+  def apply(date: String, amount: String, description: Option[String] = None) = {
+    new Expense(parseDate(date), parseAmount(amount), description)
+  }
+
+  private def parseDate(date: String) = {
+    val lastDateInListOfDates = date.split(",").reverse.head.trim
+    val sanitisedDate = lastDateInListOfDates.replaceAll("""(?<=\d)(st|nd|rd|th)""", "")
+    LocalDate.parse(sanitisedDate, formatter)
+  }
+
+  private def parseAmount(amount: String) = {
+    """\d*\.\d{2}""".r.findFirstIn(amount).map(_.toDouble).getOrElse(0D)
   }
 }
 
