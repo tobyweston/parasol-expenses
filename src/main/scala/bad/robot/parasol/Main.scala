@@ -2,8 +2,9 @@ package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
 
+import bad.robot.parasol.Save.save
 import bad.robot.parasol.site.ExpenseSummaryPredicates._
-import bad.robot.parasol.site.domain.April2016
+import bad.robot.parasol.site.domain.{April2016, Claim}
 import bad.robot.parasol.site.page.{ExpenseClaimPage, LandingPage}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 
@@ -21,22 +22,24 @@ object Main extends App {
   val expenses = landingPage
     .open
     .login(credentials._1, credentials._2)
-    .expensesAndCosts()
-      .reviewExistingCostsAndExpenses()
-        .selectFinancialYear(year)
+    .expensesAndCosts
+      .reviewExistingCostsAndExpenses(year)
+        .selectFinancialYear
         .getExpenseSummaries(Checked)
           .foreach(download)
 
 
   private def download(claim: ExpenseClaimPage) = {
-    claim
+    val expenses = claim
       .view()
-        .download
+        .extract
         .receipts
           .view
           .download
           .close
         .back
+    
+    save(Claim(claim.summary, expenses))
   }
 
   def init() = {

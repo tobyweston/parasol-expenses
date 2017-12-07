@@ -6,18 +6,18 @@ object Expenses {
 
   implicit val codec = CodecJson.derive[Expenses]
 
-  def apply(summary: ExpenseSummary, description: String, total: String, items: String, expenses: List[Expense]) = {
+  def apply(description: String, total: String, numberOfItems: String, items: List[Expense]) = {
     new Expenses(
-      summary,
       description,
       """\d*\.\d{2}""".r.findFirstIn(total).map(_.toDouble).getOrElse(0),
-      """\d*""".r.findFirstIn(items).map(_.toInt).getOrElse(0),
-      expenses
+      """\d*""".r.findFirstIn(numberOfItems).map(_.toInt).getOrElse(0),
+      items
     )
   }
 }
 
-case class Expenses(summary: ExpenseSummary, description: String, total: Double, items: Int, expenses: List[Expense])
+case class Expenses(description: String, total: Double, numberOfItems: Int, items: List[Expense])
+
 
 
 

@@ -7,16 +7,15 @@ import org.openqa.selenium.{By, WebDriver, WebElement}
 
 import scala.collection.JavaConverters._
 
-case class AllClaimsPage(driver: WebDriver) {
+case class AllClaimsPage(driver: WebDriver, year: FinancialYear) {
 
-  def selectFinancialYear(year: FinancialYear) = {
+  def selectFinancialYear = {
 
     def updatePageWithFinancialYear = driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_buttonFilter")).click()
 
     select(By.id("ctl00_ctl00_mainContent_MainContent_ddlFinancialYear"), year.text, driver)
     updatePageWithFinancialYear
     showNumberOfClaims(50)
-
     this
   }
 
@@ -31,7 +30,7 @@ case class AllClaimsPage(driver: WebDriver) {
       .filter(expenseLine)
       .map(toExpenseSummary)
       .filter(summaryType)
-      .map(ExpenseClaimPage(this, _))
+      .map(ExpenseClaimPage(this, _, expenses = List()))
   }
 
   private def getExpenseRows: List[WebElement] = {

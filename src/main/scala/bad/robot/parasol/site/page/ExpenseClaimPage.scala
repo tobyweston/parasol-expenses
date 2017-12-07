@@ -5,32 +5,30 @@ import java.nio.charset.StandardCharsets._
 import java.nio.file.Files
 
 import bad.robot._
-import bad.robot.parasol.site.domain.{Expense, Expenses, ExpenseSummary}
+import bad.robot.parasol.site.domain.{Claim, Expense, ExpenseSummary, Expenses}
 import bad.robot.parasol.site.page.ExpenseCategories.{Category, Mileage, TravelAndCarHire, all}
 import bad.robot.webdriver.{waitUntilVisible, _}
 import org.openqa.selenium.{By, WebElement}
 
 import scala.collection.JavaConverters._
 
-case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
+case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expenses: List[Expenses]) {
 
   def view() = {
     waitUntilVisible(By.id(summary.id))(driver).click()
     this
   }
 
-  def download = {
+  def extract = {
     val title = driver.findElement(By.id("ctl00_ctl00_pageTitle_pageTitle_heading")).getText
-    println(s"\n$title")
+    println(s"$title")
 
     val claimsRegion = driver.findElement(By.id("ctl00_ctl00_mainContent_MainContent_claimList_ExpensesContentPanel"))
     val expenses = all.map(category => {
       extractExpenses(category, claimsRegion.findElement(By.id(category.id)))
     })
 
-    save(expenses.filter(_.expenses.nonEmpty))
-
-    this
+    ExpenseClaimPage(parent, summary, expenses.filter(_.items.nonEmpty))
   }
 
   def receipts = {
@@ -40,8 +38,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
   def back = {
     def tryAndForceARefreshAsItsFlaky(): Unit = {
       waitForElement(By.id("ctl00_ctl00_mainContent_MainContent_gridListing_footer"))(driver)
-      parent.showNumberOfClaims(50)
-      parent.showNumberOfClaims(20)
+      parent.selectFinancialYear
       parent.showNumberOfClaims(50)
     }
 
@@ -50,6 +47,8 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
       driver.navigate.refresh()
       tryAndForceARefreshAsItsFlaky()
     }
+    
+    this.expenses
   }
 
   private def requiresRefresh() = {
@@ -65,12 +64,12 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
   private def extractExpenses(category: Category, claim: WebElement) = {
     val description = claim.findElement(By.id(category.description)).getText
     val total = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala.head.getText
-    val items = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
+    val numberOfItems = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
     val expandLink = claim.findElement(By.tagName("a"))
 
-    val details = Expenses(summary, description, total, items, Nil)
+    val expenses = Expenses(description, total, numberOfItems, Nil)
 
-    val expenses = if (details.items > 0) {
+    val items = if (expenses.numberOfItems > 0) {
       expandLink.click()
       val table = waitUntilVisible(By.id(category.details))(driver)
       val rows = table.findElements(By.tagName("tr")).asScala.toList
@@ -81,7 +80,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
       Nil
     }
 
-    details.copy(expenses = expenses)
+    expenses.copy(items = items)
   }
 
   private val toExpense: ((Category, WebElement)) => Option[Expense] = {
@@ -102,7 +101,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
       Some(Expense(date, amount))
   }
 
-  def save(expenses: List[Expenses]) = {
+  def save(claims: List[Claim]) = {
     import argonaut.Argonaut._
 
     val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
@@ -111,7 +110,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary) {
     if (!folder.exists())
       folder.mkdirs()
 
-    val json = expenses.jencode.spaces2
+    val json = claims.jencode.spaces2
     Files.write((folder / "expenses.json").toPath, json.getBytes(UTF_8))
   }
 
