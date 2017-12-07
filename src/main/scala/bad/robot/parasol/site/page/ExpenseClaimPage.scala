@@ -1,11 +1,6 @@
 package bad.robot.parasol.site.page
 
-import java.io.File
-import java.nio.charset.StandardCharsets._
-import java.nio.file.Files
-
-import bad.robot._
-import bad.robot.parasol.site.domain.{Claim, Expense, ExpenseSummary, Expenses}
+import bad.robot.parasol.site.domain.{Expense, ExpenseSummary, Expenses}
 import bad.robot.parasol.site.page.ExpenseCategories.{Category, Mileage, TravelAndCarHire, all}
 import bad.robot.webdriver.{waitUntilVisible, _}
 import org.openqa.selenium.{By, WebElement}
@@ -99,19 +94,6 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
       val date = cells.head.getText
       val amount = cells(1).getText
       Some(Expense(date, amount))
-  }
-
-  def save(claims: List[Claim]) = {
-    import argonaut.Argonaut._
-
-    val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
-    val folder = downloadLocation / summary.period.map(_.toString()).getOrElse(summary.period.left.get)
-
-    if (!folder.exists())
-      folder.mkdirs()
-
-    val json = claims.jencode.spaces2
-    Files.write((folder / "expenses.json").toPath, json.getBytes(UTF_8))
   }
 
 }
