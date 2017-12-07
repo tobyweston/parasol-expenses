@@ -83,17 +83,23 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
   }
 
   private val scrapeCategoryExpenseItems: ((Category, WebElement)) => Option[Expense] = {
-    case (Mileage, _)  => None
-
-    case (TravelAndCarHire, row) =>
+    case (Mileage, _)               => None
+    
+    case (TravelAndCarHire, row)    =>
       val cells = row.findElements(By.tagName("td")).asScala.toList
-      val description = Some(cells.head.getText)
-      // val amountPerDay = cells(1).getText
-      val dates = cells(2).getText
+      val description = Some(cells(0).getText)
+      val date = cells(2).getText
       val total = cells(3).getText
-      Some(Expense(dates, total, description))
-
-    case (_, row)                =>
+      Some(Expense(date, total, description))
+    
+    case (ElectronicEquipment, row) =>
+      val cells = row.findElements(By.tagName("td")).asScala.toList
+      val description = Some(cells(0).getText)
+      val amount = cells(1).getText
+      val date = cells(2).getText
+      Some(Expense(date, amount, description))
+    
+    case (_, row)                   =>
       val cells = row.findElements(By.tagName("td")).asScala.toList
       val date = cells.head.getText
       val amount = cells(1).getText
