@@ -16,7 +16,9 @@ object Expenses {
   }
 }
 
-case class Expenses(description: String, total: Double, numberOfItems: Int, items: List[Expense])
+case class Expenses(description: String, total: Double, numberOfItems: Int, items: List[Expense]) {
+  def nonEmpty = numberOfItems > 0
+}
 
 
 

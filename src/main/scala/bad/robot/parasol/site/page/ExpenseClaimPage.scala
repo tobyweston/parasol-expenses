@@ -1,7 +1,7 @@
 package bad.robot.parasol.site.page
 
 import bad.robot.parasol.site.domain.{Expense, ExpenseSummary, Expenses}
-import bad.robot.parasol.site.page.ExpenseCategories.{Category, Mileage, TravelAndCarHire, all}
+import bad.robot.parasol.site.page.ExpenseCategories._
 import bad.robot.webdriver.{waitUntilVisible, _}
 import org.openqa.selenium.{By, WebElement}
 
@@ -63,23 +63,27 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
     val expandLink = claim.findElement(By.tagName("a"))
 
     val expenses = Expenses(description, total, numberOfItems, Nil)
-
-    val items = if (expenses.numberOfItems > 0) {
-      expandLink.click()
-      val table = waitUntilVisible(By.id(category.details))(driver)
-      val rows = table.findElements(By.tagName("tr")).asScala.toList
-      rows
-        .drop(1)
-        .flatMap(toExpense(category, _))
-    } else {
-      Nil
+    
+    val items = category match {
+      case Mileage if expenses.nonEmpty => List(Expense(summary.period.right.get.start, expenses.total, Some("Mileage (abbreviated)")))
+      case _ if expenses.nonEmpty       => extractItemsFromTable(category, expandLink, expenses)
+      case _                            => Nil
     }
 
     expenses.copy(items = items)
   }
 
-  private val toExpense: ((Category, WebElement)) => Option[Expense] = {
-    case (Mileage, _)            => None
+  private def extractItemsFromTable(category: Category, expandLink: WebElement, expenses: Expenses): List[Expense] = {
+    expandLink.click()
+    val table = waitUntilVisible(By.id(category.details))(driver)
+    val rows = table.findElements(By.tagName("tr")).asScala.toList
+    rows
+      .drop(1)
+      .flatMap(scrapeCategoryExpenseItems(category, _))
+  }
+
+  private val scrapeCategoryExpenseItems: ((Category, WebElement)) => Option[Expense] = {
+    case (Mileage, _)  => None
 
     case (TravelAndCarHire, row) =>
       val cells = row.findElements(By.tagName("td")).asScala.toList
