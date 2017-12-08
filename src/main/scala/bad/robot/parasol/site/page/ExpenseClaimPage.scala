@@ -60,7 +60,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
     val description = claim.findElement(By.id(category.description)).getText
     val total = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala.head.getText
     val numberOfItems = claim.findElements(By.cssSelector(".col-lg-2.col-md-2.col-sm-3.col-xs-6")).asScala(1).getText
-    val expandLink = claim.findElement(By.tagName("a"))
+    val expandLink = claim.findElement(By.id(category.expander))
 
     val expenses = Expenses(description, total, numberOfItems, Nil)
     

@@ -6,6 +6,7 @@ object ExpenseCategories {
     def id = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_expenseAddItems"
     def description = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_summaryType"
     def details = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_detailsItems"
+    def expander = s"ctl00_ctl00_mainContent_MainContent_claimList_${shortName}_accordionExpandImage"
   }
   case object Mileage extends Category("mileage")
   case object CarParking extends Category("carParking")
