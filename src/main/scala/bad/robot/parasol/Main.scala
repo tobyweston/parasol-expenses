@@ -3,11 +3,14 @@ package bad.robot.parasol
 import java.io.{File, FileNotFoundException}
 import java.nio.file.{Files, Path}
 
+import argonaut.Parse
 import bad.robot.parasol.DownloadLocation.save
 import bad.robot.parasol.site.ExpenseSummaryPredicates._
 import bad.robot.parasol.site.domain.{April2016, Claim}
 import bad.robot.parasol.site.page.{ExpenseClaimPage, LandingPage}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
+
+import scala.io.Source
 
 object Main extends App {
 
@@ -67,6 +70,14 @@ object Main extends App {
 object GatherExpenses extends App {
   private val expenses: List[Path] = DownloadLocation.findExpenses
 
+  val load: Path => Either[String, Claim] = path => {
+    val asString = Source.fromFile(path.toFile).getLines().mkString("")
+    Parse.decodeEither[Claim](asString)
+  }
+  
   println(s"Found ${expenses.size} weeks:")
-  expenses.foreach(println)
+  expenses.map(load).foreach {
+    case Left(error)  => println("Error: " + error)
+    case Right(claim) => println(claim.summary.period.right.get + " " + claim.summary.amount)
+  }
 }

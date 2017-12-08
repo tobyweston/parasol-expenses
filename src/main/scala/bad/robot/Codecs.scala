@@ -27,12 +27,4 @@ object Codecs {
       cursor.as[String].flatMap(toDate)
     })
   }
-
-  implicit def eitherDateRangeEncoder: EncodeJson[Either[String, DateRange]] = {
-    EncodeJson((either: Either[String, DateRange]) =>
-      argonaut.Json(
-        "period" := either.map(_.toString).getOrElse(either.left.get)
-      )
-    )
-  }
 }
