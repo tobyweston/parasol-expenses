@@ -4,12 +4,13 @@ import java.io.File
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 
-import bad.robot.parasol.site.domain.Claim
 import argonaut.Argonaut._
 import bad.robot._
+import bad.robot.parasol.site.domain.Claim
 
-object Save {
-  private val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
+object DownloadLocation {
+
+  val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
 
   def save(claim: Claim) = {
     val target = claim.summary.period.map(_.toString()).getOrElse(claim.summary.period.left.get)
@@ -20,6 +21,10 @@ object Save {
 
     val json = claim.jencode.spaces2
     Files.write((folder / "expenses.json").toPath, json.getBytes(UTF_8))
+  }
+  
+  def findExpenses = {
+    downloadLocation.find("expenses.json")
   }
 
 }

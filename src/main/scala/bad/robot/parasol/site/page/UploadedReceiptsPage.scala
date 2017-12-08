@@ -1,9 +1,9 @@
 package bad.robot.parasol.site.page
 
-import java.io.File
 import java.util.concurrent.TimeUnit._
 
 import bad.robot._
+import bad.robot.parasol.DownloadLocation.downloadLocation
 import bad.robot.webdriver.PageObject
 import org.openqa.selenium.{By, WebElement}
 
@@ -11,9 +11,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 
 case class UploadedReceiptsPage(parent: ExpenseClaimPage, period: Either[String, DateRange], page: Option[WebElement]) extends PageObject {
-
-  private val downloadLocation = new File(System.getProperty("user.home")) / "Downloads"
-
+  
   def view = {
     val viewReceiptsButton = By.id("ctl00_ctl00_mainContent_MainContent_businessExpenseClaim_uploadedReceipts_uploadedReceipts")
     parent.driver.findElement(viewReceiptsButton).click()

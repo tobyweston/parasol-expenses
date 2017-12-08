@@ -1,8 +1,9 @@
 package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
+import java.nio.file.{Files, Path}
 
-import bad.robot.parasol.Save.save
+import bad.robot.parasol.DownloadLocation.save
 import bad.robot.parasol.site.ExpenseSummaryPredicates._
 import bad.robot.parasol.site.domain.{April2016, Claim}
 import bad.robot.parasol.site.page.{ExpenseClaimPage, LandingPage}
@@ -61,4 +62,11 @@ object Main extends App {
 
     System.setProperty("webdriver.chrome.driver", executable)
   }
+}
+
+object GatherExpenses extends App {
+  private val expenses: List[Path] = DownloadLocation.findExpenses
+
+  println(s"Found ${expenses.size} weeks:")
+  expenses.foreach(println)
 }
