@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter
 import bad.robot.Codecs._
 
 import argonaut.CodecJson
+import bad.robot.parasol.Amount
 
 object Expense {
 
@@ -13,7 +14,7 @@ object Expense {
   private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
   def apply(date: String, amount: String, description: Option[String] = None) = {
-    new Expense(parseDate(date), parseAmount(amount), description)
+    new Expense(parseDate(date), Amount.parse(amount), description)
   }
 
   private def parseDate(date: String) = {
@@ -21,10 +22,7 @@ object Expense {
     val sanitisedDate = lastDateInListOfDates.replaceAll("""(?<=\d)(st|nd|rd|th)""", "")
     LocalDate.parse(sanitisedDate, formatter)
   }
-
-  private def parseAmount(amount: String) = {
-    """\d*\.\d{2}""".r.findFirstIn(amount).map(_.toDouble).getOrElse(0D)
-  }
+  
 }
 
 case class Expense(date: LocalDate, amount: Double, description: Option[String])

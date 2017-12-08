@@ -68,16 +68,20 @@ object Main extends App {
 }
 
 object GatherExpenses extends App {
-  private val expenses: List[Path] = DownloadLocation.findExpenses
+  private val files: List[Path] = DownloadLocation.findExpenses
 
   val load: Path => Either[String, Claim] = path => {
     val asString = Source.fromFile(path.toFile).getLines().mkString("")
     Parse.decodeEither[Claim](asString)
   }
   
-  println(s"Found ${expenses.size} weeks:")
-  expenses.map(load).foreach {
-    case Left(error)  => println("Error: " + error)
-    case Right(claim) => println(claim.summary.period.right.get + " " + claim.summary.amount)
-  }
+  println(s"Found ${files.length} weeks:")
+  val expenses = files.map(load)
+  val total = expenses.map {
+    case Left(error)  => println("Error: " + error); 0
+    case Right(claim) => println(claim.summary.period.right.get + "   £ " + claim.summary.amount); claim.summary.amount 
+  }.reduce(_ + _)
+  
+  println("\ntotal:  £ " + total)
+
 }
