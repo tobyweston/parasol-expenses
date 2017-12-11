@@ -67,6 +67,10 @@ object Main extends App {
   }
 }
 
+object DeleteExpensesJson extends App {
+//  DownloadLocation.findExpenses.foreach(_.toFile.delete())  
+}
+
 object GatherExpenses extends App {
   private val files: List[Path] = DownloadLocation.findExpenses
 
@@ -77,7 +81,7 @@ object GatherExpenses extends App {
 
   def expenseAmount(amountFrom: Claim => Double): PartialFunction[Either[String, Claim], Double] = {
     case Left(error)  => println("Error: " + error); 0
-    case Right(claim) => println(s"${claim.startDate} - ${claim.endDate}   £ ${claim.summary.amount}"); amountFrom(claim)
+    case Right(claim) => println(s"${claim.startDate} - ${claim.endDate}   £ ${claim.summary.amount}    (£ ${claim.expenses.flatMap(_.items).map(_.amount).sum} crc)"); amountFrom(claim)
   }
   
   println(s"Found ${files.length} weeks:")
@@ -88,7 +92,7 @@ object GatherExpenses extends App {
   println(s"\ntotal:        £ $total  ($crc crc)\n")
 
   val csv = toCsv(expenses.map(_.right.get))
-  println("assignment,status,periodstart,periodend,summarydescription,date,description,amount")
+  println("assignment,status,periodstart,periodend,summary,date,description,amount")
   csv.foreach(row => {
     println(s"${row(0)},${row(1)},${row(2)},${row(3)},${row(4)},${row(5)},${row(6)},${row(7)}")
   })
@@ -101,7 +105,7 @@ object GatherExpenses extends App {
       item    <- expense.items
     } yield {
       val summary = claim.summary
-      Array(summary.assignment.trim, summary.status.trim, claim.startDate.toString.trim, claim.endDate.toString.trim, expense.description.trim, item.date.toString.trim, item.description.getOrElse("").trim, item.amount)
+      Array(summary.assignment.trim, summary.status.trim, claim.startDate.toString.trim, claim.endDate.toString.trim, expense.description.trim, item.date.toString.trim, item.description.getOrElse("").replaceAll(",", "").trim, item.amount)
     }
   }
 }

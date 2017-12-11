@@ -98,6 +98,23 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
       val amount = cells(1).getText
       val date = cells(2).getText
       Some(Expense(date, amount, description))
+
+    case (FoodAndDrink, row)        =>
+      val cells = row.findElements(By.tagName("td")).asScala.toList
+      val simplifiedView = cells.size == 3
+      if (simplifiedView) {
+        val date = cells.head.getText
+        val amount = cells(1).getText
+        val description = cells(2).getText.replaceAll("Receipt required \\(", "").replaceAll("\\)", "")
+        Some(Expense(date, amount, Some(description)))
+      } else {
+        val date = cells.head.getText
+        val description = cells(8).getText.replaceAll("Receipts required \\(", "").replaceAll("\\)", "")
+        val breakfast = Expense(date, cells(1).getText)
+        val lunch = Expense(date, cells(3).getText)
+        val dinner = Expense(date, cells(6).getText)
+        Some(breakfast.copy(amount = breakfast.amount + lunch.amount + dinner.amount, description = Some(description)))
+      }
     
     case (_, row)                   =>
       val cells = row.findElements(By.tagName("td")).asScala.toList
