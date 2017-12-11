@@ -76,10 +76,13 @@ object GatherExpenses extends App {
   }
   
   println(s"Found ${files.length} weeks:")
-  val expenses = files.map(load)
+  val expenses = files.map(load).sortBy(_.right.get)
   val total = expenses.map {
     case Left(error)  => println("Error: " + error); 0
-    case Right(claim) => println(claim.summary.period.right.get + "   £ " + claim.summary.amount); claim.summary.amount 
+    case Right(claim) => {
+      val range = claim.summary.period.right.get
+      println(s"${range.start}-${range.end}   £ ${claim.summary.amount}")
+    }; claim.summary.amount 
   }.reduce(_ + _)
   
   println("\ntotal:  £ " + total)
