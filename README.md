@@ -54,6 +54,11 @@ Fuck that. I wrote a scrapper.﻿
 
 # Usage
 
+## Run it
+
+1. Find the `Main` object and run it. It will generate a folder per week in the `user.home` under `Downloads` (or crash). In each folder will be your receipts and an `expenses.json` file.
+1. Find the `GatherExpenses` object and run that. It will take the `expenses.json` files and produce CSV to the console which you can copy and paste into Excel.
+
 ## Credentials
 
 Set some VM options for your credentials to http://myparasol.co.uk
