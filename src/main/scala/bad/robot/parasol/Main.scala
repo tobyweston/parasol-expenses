@@ -27,22 +27,22 @@ object Main extends App {
     .open
     .login(credentials._1, credentials._2)
     .expensesAndCosts
-      .reviewExistingCostsAndExpenses(year)
-        .selectFinancialYear
-        .getExpenseSummaries(Checked)
-          .foreach(download)
+    .reviewExistingCostsAndExpenses(year)
+    .selectFinancialYear
+    .getExpenseSummaries(Checked)
+    .foreach(download)
 
 
   private def download(claim: ExpenseClaimPage) = {
     val expenses = claim
       .view()
-        .extract
-        .receipts
-          .view
-          .download
-          .close
-        .back
-    
+      .extract
+      .receipts
+      .view
+      .download
+      .close
+      .back
+
     save(Claim(claim.summary, expenses))
   }
 
@@ -53,13 +53,13 @@ object Main extends App {
 
   private def setDriver() = {
     val os = sys.props.get("os.name")
-    
+
     val executable = os match {
       case Some("Mac OS X")                                    => "src/main/resources/chromedriver_mac64_2.31/chromedriver"
       case Some(other) if other.toLowerCase contains "windows" => "src/main/resources/chromedriver_win32_2.31/chromedriver.exe"
       case None                                                => ???
     }
-    
+
     if (!new File(executable).exists())
       throw new FileNotFoundException(s"Can't find driver based on the working directory: $executable")
 
@@ -74,17 +74,34 @@ object GatherExpenses extends App {
     val asString = Source.fromFile(path.toFile).getLines().mkString("")
     Parse.decodeEither[Claim](asString)
   }
+
+  def expenseAmount(amountFrom: Claim => Double): PartialFunction[Either[String, Claim], Double] = {
+    case Left(error)  => println("Error: " + error); 0
+    case Right(claim) => println(s"${claim.startDate} - ${claim.endDate}   £ ${claim.summary.amount}"); amountFrom(claim)
+  }
   
   println(s"Found ${files.length} weeks:")
   val expenses = files.map(load).sortBy(_.right.get)
-  val total = expenses.map {
-    case Left(error)  => println("Error: " + error); 0
-    case Right(claim) => {
-      val range = claim.summary.period.right.get
-      println(s"${range.start}-${range.end}   £ ${claim.summary.amount}")
-    }; claim.summary.amount 
-  }.reduce(_ + _)
-  
-  println("\ntotal:  £ " + total)
+  val total = expenses.map(expenseAmount(_.summary.amount)).sum
+  val crc = expenses.map(expenseAmount(_.expenses.flatMap(_.items).map(_.amount).sum)).sum
 
+  println(s"\ntotal:        £ $total  ($crc crc)\n")
+
+  val csv = toCsv(expenses.map(_.right.get))
+  println("assignment,status,periodstart,periodend,summarydescription,date,description,amount")
+  csv.foreach(row => {
+    println(s"${row(0)},${row(1)},${row(2)},${row(3)},${row(4)},${row(5)},${row(6)},${row(7)}")
+  })
+
+  
+  def toCsv(claims: List[Claim]) = {
+    for {
+      claim   <- claims
+      expense <- claim.expenses
+      item    <- expense.items
+    } yield {
+      val summary = claim.summary
+      Array(summary.assignment.trim, summary.status.trim, claim.startDate.toString.trim, claim.endDate.toString.trim, expense.description.trim, item.date.toString.trim, item.description.getOrElse("").trim, item.amount)
+    }
+  }
 }

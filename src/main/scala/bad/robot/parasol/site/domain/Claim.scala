@@ -13,4 +13,5 @@ object Claim {
 
 case class Claim(summary: ExpenseSummary, expenses: List[Expenses]) {
   def startDate = summary.period.map(_.start).getOrElse(LocalDate.ofEpochDay(0))
+  def endDate = summary.period.map(_.end).getOrElse(LocalDate.ofEpochDay(0))
 }
