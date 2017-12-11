@@ -4,11 +4,11 @@ Scrap a financial year's worth of expenses and attempt to categorise them.
 
 ## Background
 
-In 
+From 6th April 2016, HMRC introduced legislation affecting expense claims through Umbrella companies like Parasol. When it was introduced, Parasol stopped paying out expenses (excluding mileage) and instead requested employees continue to track expenses through their website to be claimed later via the self assessment.
 
-Parasol sent emails out and publish on their website ([http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/](http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/)):
+At the time, Parasol sent emails outlining the change of process and a reassuring and published this on their website ([http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/](http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/)):
 
-> "Parasol will help you with this by providing you with all the information HMRC will need, so long as you regularly log all of your expenses and upload receipts on the MyParasol portal so we can track and check them."
+> "You’ll be able to apply for a tax refund from HMRC on these expenses after the end of the tax year (5th April) either via a self-assessment tax return or a P87 form. Parasol will help you with this by providing you with all the information HMRC will need, so long as you regularly log all of your expenses and upload receipts on the MyParasol portal so we can track and check them."
 
 Naively, I assumed Parasol would be able to provide a report that I could use come self assessment time.
 
@@ -30,7 +30,7 @@ When the time came around, I enquired with Parasol:
 
 After some more enquiry, it became clear that Parasol were going to offer zero assistance in gathering my expense data.
 
-> To be clear though I wasn't asking for help with completing my self assessment but with information regarding expenses and the recent changes. Your site (http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/) states
+> To be clear I wasn't asking for help with completing my self assessment but with information regarding expenses and the recent changes. Your site (http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/) states
 >
 > "Parasol will help you with this by providing you with all the information HMRC will need, so long as you regularly log all of your expenses and upload receipts on the MyParasol portal so we can track and check them."
 > 
