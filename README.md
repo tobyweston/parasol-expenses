@@ -8,13 +8,13 @@ From 6th April 2016, HMRC introduced legislation affecting expense claims throug
 
 At the time, Parasol sent emails outlining the change of process and published this on their website ([http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/](http://www.parasolgroup.co.uk/help-me-decide/guides/expenses/)):
 
-> "You’ll be able to apply for a tax refund from HMRC on these expenses after the end of the tax year (5th April) either via a self-assessment tax return or a P87 form. Parasol will help you with this by providing you with all the information HMRC will need, so long as you regularly log all of your expenses and upload receipts on the MyParasol portal so we can track and check them."
+> You’ll be able to apply for a tax refund from HMRC on these expenses after the end of the tax year (5th April) either via a self-assessment tax return or a P87 form. Parasol will help you with this by providing you with all the information HMRC will need, so long as you regularly log all of your expenses and upload receipts on the MyParasol portal so we can track and check them.
 
 Naively, I assumed Parasol would be able to provide a report that I could use come self assessment time.
 
 When the time came around, I enquired with Parasol:
 
-> "I'm due to prepare my self assessment so wanted to ask if you could help with regards to expenses. Can you outline how it works and how you're able to help please?"
+> I'm due to prepare my self assessment so wanted to ask if you could help with regards to expenses. Can you outline how it works and how you're able to help please?
 
 ... to which they replied:
 
@@ -48,7 +48,7 @@ Parasol sent me this reply.
 >
 > Apologies for any inconvenience caused in regards to this.  
 
-So that would be zero assistance then. I have to click through for every week's worth of expenses, click again to see the receipts, download each (one click each), go back to the screen I was just on and manually transpose the amounts and dates. 
+So that would be zero assistance then. I'm supposed to click once for every week's worth of expenses, click again to see the receipts, download each (one click each), go back to the screen I was just on and manually transpose the amounts and dates? 
 
 Fuck that. I wrote a scrapper.﻿ 
 
