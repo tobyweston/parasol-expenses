@@ -76,5 +76,6 @@ Specifically:
 * Pagination of the expenses page isn't supported. It assumes you'll have less than 50 expenses for a given tax year.
 * The tax year is hardcoded. Go find it.
 * Not all expense types are supported (see `Category` and `ExpenseClaimPage`), just add to the pattern matches if you need to.
+* Tested with chromedriver against Chrome 71.0.3578.98 only, you may need to update.
 
 Go get 'em Tiger.

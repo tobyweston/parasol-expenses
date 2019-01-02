@@ -1,12 +1,12 @@
 package bad.robot.parasol
 
 import java.io.{File, FileNotFoundException}
-import java.nio.file.{Files, Path}
+import java.nio.file.Path
 
 import argonaut.Parse
 import bad.robot.parasol.DownloadLocation.save
 import bad.robot.parasol.site.ExpenseSummaryPredicates._
-import bad.robot.parasol.site.domain.{April2016, Claim}
+import bad.robot.parasol.site.domain.{April2017, Claim}
 import bad.robot.parasol.site.page.{ExpenseClaimPage, LandingPage}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 
@@ -21,7 +21,7 @@ object Main extends App {
     val password = sys.props.get("password").getOrElse(throw new Exception("no password found, set with -Dpassword=xxx"))
     (user, password)
   }
-  val year = April2016
+  val year = April2017
 
   val expenses = landingPage
     .open
@@ -55,8 +55,8 @@ object Main extends App {
     val os = sys.props.get("os.name")
 
     val executable = os match {
-      case Some("Mac OS X")                                    => "src/main/resources/chromedriver_mac64_2.31/chromedriver"
-      case Some(other) if other.toLowerCase contains "windows" => "src/main/resources/chromedriver_win32_2.31/chromedriver.exe"
+      case Some("Mac OS X")                                    => "src/main/resources/chromedriver_mac64_2.45/chromedriver"
+      case Some(other) if other.toLowerCase contains "windows" => "src/main/resources/chromedriver_win32_2.45/chromedriver.exe"
       case None                                                => ???
     }
 
