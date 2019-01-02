@@ -1,6 +1,6 @@
 # Parasol Expense Scrapper
 
-Scrap a financial year's worth of expenses from https://myparasol.co.uk/ and attempt to categorise them.
+Scrape an entire financial year's worth of expenses from https://myparasol.co.uk/ and attempt to categorise them.
 
 ## Background
 
