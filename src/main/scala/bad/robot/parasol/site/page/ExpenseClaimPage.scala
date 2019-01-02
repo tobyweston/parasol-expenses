@@ -82,7 +82,7 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
       .flatMap(scrapeCategoryExpenseItems(category, _))
   }
 
-  private val scrapeCategoryExpenseItems: ((Category, WebElement)) => Option[Expense] = {
+  private val scrapeCategoryExpenseItems: (Category, WebElement) => Option[Expense] = {
     case (Mileage, _)               => None
     
     case (TravelAndCarHire, row)    =>
@@ -101,11 +101,11 @@ case class ExpenseClaimPage(parent: AllClaimsPage, summary: ExpenseSummary, expe
 
     case (FoodAndDrink, row)        =>
       val cells = row.findElements(By.tagName("td")).asScala.toList
-      val simplifiedView = cells.size == 3
+      val simplifiedView = cells.size == 2
       if (simplifiedView) {
         val date = cells.head.getText
         val amount = cells(1).getText
-        val description = cells(2).getText.replaceAll("Receipt required \\(", "").replaceAll("\\)", "")
+        val description = "No description"
         Some(Expense(date, amount, Some(description)))
       } else {
         val date = cells.head.getText
