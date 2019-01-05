@@ -50,7 +50,7 @@ Parasol sent me this reply.
 
 So that would be zero assistance then. I'm supposed to click once for every week's worth of expenses, click again to see the receipts, download each (one click each), go back to the screen I was just on and manually transpose the amounts and dates? 
 
-Fuck that. I wrote a scrapper.﻿ 
+No thank you. I wrote a scrapper.﻿ 
 
 # Usage
 
